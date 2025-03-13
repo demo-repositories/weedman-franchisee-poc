@@ -4,6 +4,32 @@ import {visionTool} from '@sanity/vision'
 import {franchiseeOwnerSchemaTypes, globalAdminSchemaTypes} from './schemaTypes'
 import {createRoleOnPublish} from './actions/createRoleOnPublish'
 import type {DocumentActionComponent} from 'sanity'
+import {createClient} from '@sanity/client'
+
+// Create a client for fetching data
+const client = createClient({
+  projectId: 'b7tq4qrc',
+  dataset: 'production',
+  apiVersion: '2023-05-03',
+})
+
+async function getFranchiseeWorkspaces() {
+  const franchisees = await client.fetch(`*[_type == "franchisee"]`)
+  if (!franchisees || franchisees.length === 0) {
+    return null
+  }
+  return franchisees.map((franchisee: any) => ({
+    name: franchisee.name,
+    title: franchisee.name,
+    basePath: `/${franchisee.slug.current}`,
+    projectId: 'b7tq4qrc',
+    dataset: 'production',
+    plugins: [structureTool(), visionTool()],
+    schema: {
+      types: franchiseeOwnerSchemaTypes,
+    },
+  }))
+}
 
 export default defineConfig([
   {
@@ -30,16 +56,5 @@ export default defineConfig([
       }
     },
   },
-  {
-    name: 'austin-franchisee',
-    title: 'Austin',
-    projectId: 'b7tq4qrc',
-    dataset: 'production',
-    basePath: "/auston",
-    plugins: [structureTool(), visionTool()],
-
-    schema: {
-      types: franchiseeOwnerSchemaTypes,
-    },
-  }
+  ...(await getFranchiseeWorkspaces())
 ])
