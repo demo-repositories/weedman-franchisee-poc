@@ -1,3 +1,5 @@
 import franchisee from "./franchisee";
+import storeInfo from "./storeInfo";
 
-export const schemaTypes = [franchisee]
+export const globalAdminSchemaTypes = [franchisee]
+export const franchiseeOwnerSchemaTypes = [storeInfo]
