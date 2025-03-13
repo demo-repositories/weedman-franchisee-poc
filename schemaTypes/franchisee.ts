@@ -6,6 +6,12 @@ export default defineType({
   type: 'document',
   fields: [
     defineField({
+      name: 'id',
+      title: 'ID',
+      type: 'string',
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
       name: 'name',
       title: 'Name',
       type: 'string',
@@ -21,5 +27,10 @@ export default defineType({
       },
       validation: (Rule) => Rule.required(),
     }),
+    defineField({
+        name: 'phoneNumber',
+        title: 'Phone Number',
+        type: 'string',
+      }),
   ],
 })
