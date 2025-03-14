@@ -39,16 +39,24 @@ export default defineConfig([
     dataset: 'production',
     basePath: "/franchisee",
     plugins: [structureTool({
-      structure: (S, context) => {
+      structure: async (S, context) => {
         const userRoles = context.currentUser?.roles;
+        const {getClient} = context;
+        const client = getClient({apiVersion: '2023-01-01'});
 
         // Find a role that is not 'franchisee-owner' and not 'admin'
         const otherRole = userRoles?.find((role: Role) => 
           role.name !== 'franchisee-owner' && role.name !== 'administrator'
         );
 
+        const franchisee = await client.fetch("*[_type == 'franchisee' && id == $id][0]", {id: otherRole?.name})
+
         if (otherRole || userRoles?.find((role: Role) => role.name === 'franchisee-owner')) {
-          return S.documentTypeList('franchisee').title('Store Information').filter(`id == $id`).params({id: otherRole?.name})
+          return S.list().id("franchisee").title("Your Store").items([
+            S.listItem().id("store-info").title("Store Information").child(
+              S.document().id(franchisee._id).schemaType("franchisee")
+            )
+          ])
         }
 
         return S.list().title('No Access')
@@ -58,5 +66,7 @@ export default defineConfig([
     schema: {
       types: franchiseeOwnerSchemaTypes,
     },
+
+    
   },
 ])
