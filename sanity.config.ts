@@ -14,7 +14,18 @@ export default defineConfig([
     projectId: PROJECT_ID,
     dataset: 'production',
     basePath: "/admin",
-    plugins: [structureTool(), visionTool()],
+    plugins: [structureTool({
+      structure: (S, context) => {
+        const userRoles = context.currentUser?.roles || [];
+        const isAdmin = userRoles.some((role) => role.name === 'administrator');
+        
+        if (!isAdmin) {
+          return S.component(() => "No Access").id("no-access");
+        }
+        
+        return S.defaults()
+      }
+    }), visionTool()],
 
     schema: {
       types: globalAdminSchemaTypes,
