@@ -77,7 +77,5 @@ export default defineConfig([
     schema: {
       types: franchiseeOwnerSchemaTypes,
     },
-
-    
   },
 ])
