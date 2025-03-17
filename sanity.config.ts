@@ -23,7 +23,7 @@ const franchiseeConfig = {
 
       // Find a role that is not 'franchisee-owner' and not 'admin'
       const otherRole = userRoles?.find((role: Role) => 
-        role.name !== 'franchisee-owner' && role.name !== 'administrator'
+        role.name !== 'administrator'
       );
 
       if(!otherRole) {
