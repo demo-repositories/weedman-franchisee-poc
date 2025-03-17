@@ -28,12 +28,18 @@ export function createRoleOnPublish(props: DocumentActionProps): DocumentActionD
       : 'Create Role and Publish',
     onHandle: async () => {
       try {
-        const slug = draft?.slug
-        if (!slug) {
-          throw new Error('Slug is missing from the document')
+        const name = draft?.name as String
+        if (!name) {
+          throw new Error('Name is missing from the document')
         }
 
-        // First, create the role using the Sanity Management API
+        // Format the role name: convert location to lowercase and replace spaces with underscores
+        const locationSlug = name.toLowerCase().replace(/\s+/g, '_')
+        const membershipType = 'owner' // You might want to make this dynamic based on some field
+        const roleName = `${locationSlug}-${membershipType}`
+        const roleTitle = `${draft.name} ${membershipType.charAt(0).toUpperCase() + membershipType.slice(1)}`
+
+        // Create the role using the Sanity Management API
         setActionState('creating-role')
         const response = await fetch(`https://api.sanity.io/v2021-06-07/projects/${projectId}/roles`, {
           method: 'POST',
@@ -42,9 +48,8 @@ export function createRoleOnPublish(props: DocumentActionProps): DocumentActionD
             'Authorization': `Bearer ${ROLE_CREATOR_API_TOKEN}`
           },
           body: JSON.stringify({
-            // @ts-ignore
-            name: draft?.slug?.current,
-            title: draft.name,
+            name: roleName,
+            title: roleTitle,
           })
         })
 

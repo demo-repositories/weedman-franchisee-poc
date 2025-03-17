@@ -1,2 +1,2 @@
-- FIX admin workspace is currently visible for non admins
-- THINK invite flow needs to associate 2 roles, within manage can only add 1.
+- update document action to create a role that combines location with owner/member
+- create a way to deploy 2 studios, one for admin, one for franchisee
