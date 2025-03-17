@@ -102,8 +102,6 @@ const adminConfig = {
 
 export default defineConfig(
   STUDIO_TYPE === "administrator" 
-    ? [adminConfig] 
-    : STUDIO_TYPE === "franchisee" 
-      ? [franchiseeConfig] 
-      : [franchiseeConfig, adminConfig]
+    ? [adminConfig, franchiseeConfig] 
+    : [franchiseeConfig]
 )
